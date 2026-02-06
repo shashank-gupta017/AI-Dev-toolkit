@@ -1,184 +1,105 @@
-# Quick Reference Guide
+# Quick Reference
 
-## 🚀 Most Common Workflows
+> **Agents** work by name in conversation: *"Use codebase-locator to find..."*
+> **Commands** are workflow templates. Invoke by asking Copilot: *"Read .claude/commands/[name].md and follow it"* or describe what you want directly. Some may be available as skills (`/skills list`).
 
-### 1. Understand Code
+## Agents
+
+| Agent | Purpose | Example |
+|-------|---------|---------|
+| `codebase-locator` | Find WHERE files live | *"Find all API routes"* |
+| `codebase-analyzer` | Explain HOW code works | *"Trace the login flow"* |
+| `codebase-pattern-finder` | Show patterns to follow | *"Show pagination examples"* |
+| `thoughts-locator` | Find knowledge base docs | *"Find auth research"* |
+| `thoughts-analyzer` | Extract insights from docs | *"Key decisions in doc X"* |
+| `web-search-researcher` | Research external info | *"Stripe webhook best practices"* |
+
+Use agents in conversation: *"Use codebase-locator to find all authentication files"*
+
+---
+
+## Commands
+
+### No Setup Needed
+
+| Command | Purpose |
+|---------|---------|
+| `/commit` | Review changes, propose commit messages, ask for confirmation |
+| `/ci_commit` | Autonomous commits (for CI/automation) |
+| `/create_plan_nt` | Create implementation plan |
+| `/create_plan_generic` | Create plan (no external tool refs) |
+| `/research_codebase_nt` | Research and document codebase |
+| `/research_codebase_generic` | Research (no external tool refs) |
+| `/iterate_plan_nt` | Refine an existing plan |
+
+### Need `thoughts/` Directory
+
+| Command | Purpose |
+|---------|---------|
+| `/create_plan` | Thorough planning with parallel research |
+| `/implement_plan [path]` | Execute plan phase-by-phase with verification |
+| `/iterate_plan [path]` | Refine plan based on feedback |
+| `/validate_plan [path]` | Verify implementation matches plan |
+| `/research_codebase` | Deep research with historical context |
+| `/describe_pr` | Generate PR description from changes |
+| `/ci_describe_pr` | PR description (for CI/automation) |
+| `/create_handoff` | Save session context for later |
+| `/resume_handoff [path]` | Resume from handoff document |
+| `/create_worktree` | Set up git worktree + launch implementation |
+| `/founder_mode` | Retroactive ticket + PR for experimental work |
+
+---
+
+## Common Workflows
+
+**Understand code:**
 ```
-"Use codebase-locator to find [feature] files"
-"Use codebase-analyzer to explain how [feature] works"
+Use codebase-locator to find [feature] files
+Use codebase-analyzer to explain how [feature] works
 ```
 
-### 2. Plan Feature
+**Plan → Build → Ship:**
 ```
-/create_plan_nt              # Quick planning (no docs needed)
-/create_plan                 # Comprehensive planning (needs thoughts/)
-```
-
-### 3. Implement Feature
-```
+/create_plan_nt
 /implement_plan thoughts/shared/plans/YYYY-MM-DD-feature.md
-```
-
-### 4. Commit Changes
-```
+/validate_plan thoughts/shared/plans/YYYY-MM-DD-feature.md
 /commit
-```
-
-### 5. Generate PR Description
-```
 /describe_pr
 ```
 
-### 6. Research Codebase
+**Research:**
 ```
-/research_codebase_nt "How does [X] work?"     # No docs needed
-/research_codebase "How does [X] work?"        # Includes historical context
-```
-
----
-
-## 📋 All Agents
-
-| Agent | Purpose | Example Use |
-|-------|---------|-------------|
-| `codebase-locator` | Find files | "Find all API routes" |
-| `codebase-analyzer` | Understand code | "Explain login flow" |
-| `codebase-pattern-finder` | Find patterns | "Show pagination examples" |
-| `thoughts-locator` | Find docs | "Find auth research" |
-| `thoughts-analyzer` | Extract insights | "Key decisions in doc X" |
-| `web-search-researcher` | Web research | "Stripe webhook patterns" |
-
----
-
-## 📋 All Commands
-
-### Zero Dependencies (Work Immediately)
-- `/commit` - Create commits
-- `/ci_commit` - CI-focused commits
-- `/research_codebase_nt` - Research (no docs)
-- `/create_plan_nt` - Planning (no docs)
-- `/research_codebase_generic` - Generic research
-- `/create_plan_generic` - Generic planning
-
-### With Thoughts Directory
-- `/create_plan` - Interactive planning
-- `/implement_plan` - Execute plans
-- `/research_codebase` - Research with context
-- `/describe_pr` - Generate PR descriptions
-- `/ci_describe_pr` - CI PR descriptions
-- `/iterate_plan` - Refine plans
-- `/iterate_plan_nt` - Refine (no docs)
-- `/validate_plan` - Review plans
-- `/create_handoff` - Context handoff
-- `/resume_handoff` - Resume work
-- `/create_worktree` - Git worktree workflow
-- `/founder_mode` - Experimental workflow
-
----
-
-## 🎯 When to Use What
-
-### "I need to understand existing code"
-→ Use agents in conversation
-- `codebase-locator` - Find files
-- `codebase-analyzer` - Understand implementation
-- `codebase-pattern-finder` - See examples
-
-### "I want to research a topic"
-→ Use research commands
-- `/research_codebase_nt` - Quick, no setup
-- `/research_codebase` - Comprehensive with docs
-
-### "I need to plan a feature"
-→ Use planning commands
-- `/create_plan_nt` - Quick plan, no setup
-- `/create_plan` - Detailed plan with research
-
-### "I'm implementing a plan"
-→ Use implementation command
-- `/implement_plan [path]` - Execute with verification gates
-
-### "I made changes and want to commit"
-→ Use commit command
-- `/commit` - Smart commit creation
-
-### "I need to describe my PR"
-→ Use PR command
-- `/describe_pr` - Generate description
-
----
-
-## 💡 Pro Tips
-
-### Agent Usage
-- Agents work in conversation - just ask to use them
-- Spawn multiple agents in parallel for efficiency
-- Agents are read-only - safe to use anytime
-
-### Command Usage
-- Type `/` to see available commands
-- Commands with `_nt` suffix need no setup
-- Commands ask before making changes
-
-### Thoughts Directory
-- Optional but powerful for team knowledge
-- Commit to git to share with team
-- Use templates for consistency
-
-### Verification Gates
-- Commands pause for manual verification
-- Don't skip manual testing
-- Confirms changes work as expected
-
----
-
-## 🔧 Customization
-
-### Adapt for Your Stack
-```bash
-# Replace test commands
-sed -i 's/npm test/yarn test/g' .claude/commands/*.md
-
-# Replace build commands
-sed -i 's/npm run build/pnpm build/g' .claude/commands/*.md
+/research_codebase_nt "How does [X] work?"
 ```
 
-### Adapt for Your Tools
-```bash
-# Update directory names
-sed -i 's/old-name/new-name/g' .claude/commands/*.md
+**Pause / Resume work:**
+```
+/create_handoff
+/resume_handoff thoughts/shared/handoffs/TICKET/YYYY-MM-DD_handoff.md
 ```
 
 ---
 
-## 📚 Learn More
+## Decision Guide
 
-- See `README.md` for detailed documentation
-- Read individual command files for specifics
-- Check agent definitions for customization
-
----
-
-## 🚨 Quick Troubleshooting
-
-**Commands don't appear**
-→ Verify `.claude/` is in repo root
-
-**Thoughts errors**
-→ Create directory: `mkdir -p thoughts/shared/{research,plans}`
-
-**Tool not found**
-→ Install tool or edit command to use your equivalent
-
-**Agent spawn fails**
-→ Try in conversation instead of command
+| You Need To... | Use |
+|----------------|-----|
+| Find files | `codebase-locator` agent |
+| Understand code | `codebase-analyzer` agent |
+| Follow existing patterns | `codebase-pattern-finder` agent |
+| Research external tools | `web-search-researcher` agent |
+| Plan a feature | `/create_plan_nt` |
+| Build from a plan | `/implement_plan [path]` |
+| Commit changes | `/commit` |
+| Create PR | `/describe_pr` |
+| Save session context | `/create_handoff` |
 
 ---
 
-## 🎉 Get Started
+## Tips
 
-1. Copy to repo: `cp -r .claude your-project/`
-2. Try agent: "Use codebase-locator to explore"
-3. Try command: `/commit` or `/research_codebase_nt`
-4. Optional: `mkdir -p thoughts/shared/{research,plans}`
-5. Share with team!
+- **`_nt` commands** work without any setup — start with these
+- **Agents are read-only** and safe to use anytime
+- **Commands ask before changing** anything — you stay in control
+- **Research before planning** — agents find patterns to follow
+- **Commit after each phase** of `/implement_plan`
